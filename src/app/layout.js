@@ -9,7 +9,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr">
       <body className={`${inter.variable}`}>
-        <main className="h-screen w-screen overflow-hidden py-12 flex items-center justify-center">
+        <main className="h-screen w-screen overflow-hidden">
           {children}
         </main>
       </body>

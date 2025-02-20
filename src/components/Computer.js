@@ -1,33 +1,31 @@
 'use client'
 
-import { useRef, useEffect } from "react";
 import Data from "@/lib/Desktop"
 import dynamic from "next/dynamic"
 
-const Icon = dynamic(() => import('./Icon'));
+const Software = dynamic(() => import('./Software'));
+const Overlays = dynamic(() => import('./Overlays'));
 
 const Computer = () => {
     const data = Data()
 
-    return <div className="w-[80%] max-h-full aspect-video p-5 rounded-md border border-white bg-neutral-900 text-white grid grid-cols-8 grid-rows-6 text-[1vw] gap-2">
-        {data?.map((item, index) => <Soft key={index} {...item} />)}
+    return <div className="w-full h-full px-8 py-12">
+        <div className="h-full w-full flex items-center justify-center">
+            <div className="h-full aspect-video max-w-full flex items-center">
+                <div className="w-full aspect-video bg-neutral-900 border border-white rounded-md overflow-hidden text-[1vw]">
+                    <div className="h-full w-full flex flex-col">
+                        <div className="w-full h-[calc(100%-8%)] relative">
+                            <div className="h-full w-full p-4 grid grid-cols-8 grid-rows-6 gap-2 text-white">
+                                {data?.map((item, index) => <Software key={index} {...item} />)}
+                            </div>
+                            {/* <Overlays /> */}
+                        </div>
+                        <div className="h-[8%] bg-neutral-800 shrink-0"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
 export default Computer
-
-const Soft = ({ title, type, position, content }) => {
-    const ref = useRef(null)
-
-    useEffect(() => {
-        if (ref?.current && position?.x && position?.y) {
-            ref.current.style.gridColumnStart = position.x
-            ref.current.style.gridRowStart = position.y
-        }
-    }, [])
-
-    return <button ref={ref} className={`cursor-pointer h-full p-1 grid grid-rows-[1fr_auto] gap-1 place-items-center text-center rounded hover:bg-neutral-800`}>
-        <Icon name={type} fill="white" className="size-full" />
-        {title}
-    </button>
-}
