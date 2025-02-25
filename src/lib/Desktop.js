@@ -42,15 +42,7 @@ const Desktop = () => {
                 x: 1,
                 y: 4
             }
-        },
-        {
-            title: "Elololo",
-            type: "video",
-            position: {
-                x: 7,
-                y: 3
-            }
-        },
+        }
     ]
 }
 
