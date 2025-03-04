@@ -1,12 +1,12 @@
 'use client'
 
-import Data from "@/lib/Desktop"
+import { useGlobal } from "@/context/Global"
 import dynamic from "next/dynamic"
 
 const Application = dynamic(() => import('./Application'));
 
 const Computer = () => {
-    const data = Data()
+    const { desktop } = useGlobal()
 
     return <div className="w-full h-full px-8 py-12">
         <div className="h-full w-full flex items-center justify-center">
@@ -15,7 +15,7 @@ const Computer = () => {
                     <div className="h-full w-full flex flex-col">
                         <div className="w-full h-[calc(100%-8%)] relative">
                             <div className="h-full w-full p-4 grid grid-cols-8 grid-rows-6 gap-2 text-white">
-                                {data?.map((item, index) => <Application key={index} {...item} />)}
+                                {desktop?.map((item, index) => <Application key={index} {...item} />)}
                             </div>
                         </div>
                         <div className="h-[8%] bg-neutral-800 shrink-0"></div>
