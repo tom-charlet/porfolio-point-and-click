@@ -1,21 +1,17 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { OverlayContextProvider } from '../context/Overlay';
+import { inter } from './fonts';
+import { MemoryContextProvider } from '../context/Memory';
 import { GlobalContextProvider } from '../context/Global';
-
-const inter = Inter({
-  variable: "--font-inter",
-})
 
 export default function RootLayout({ children }) {
   return <html lang="fr">
     <body className={`${inter.variable}`}>
       <GlobalContextProvider>
-        <OverlayContextProvider>
+        <MemoryContextProvider>
           <main className="h-screen w-screen overflow-hidden">
             {children}
           </main>
-        </OverlayContextProvider>
+        </MemoryContextProvider>
       </GlobalContextProvider>
     </body>
   </html>

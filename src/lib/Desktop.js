@@ -2,35 +2,26 @@
 const Desktop = () => {
     return [
         {
-            type: "shortcut",
-            position: { x: 1, y: 1 },
-            content: "documents/projets-personnelles"
-        },
-        {
+            title: "Projets",
+            slug: "projets",
             type: "shortcut",
             position: { x: 1, y: 2 },
-            content: "documents/projets-professionnels"
+            content: "documents/projets"
         },
         {
+            title: "CV Vidéo",
+            slug: "cv-video",
+            type: "shortcut",
+            position: { x: 2, y: 2 },
+            content: "documents/projets/cv-video"
+        },
+           {
+            title: "Cghjkg jgjhg hjkgjkhgbjkl",
+            slug: "cv",
             type: "shortcut",
             position: { x: 3, y: 3 },
-            content: "documents/projets-scolaires"
+            content: "documents/cv"
         },
-        {
-            title: "Présentation",
-            type: "note",
-            position: { x: 3, y: 4 }
-        },
-        {
-            title: "Compétences",
-            type: "note",
-            position: { x: 2, y: 1 }
-        },
-        {
-            title: "CV",
-            type: "image",
-            position: { x: 1, y: 4 }
-        }
     ]
 }
 

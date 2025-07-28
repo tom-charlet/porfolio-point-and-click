@@ -3,16 +3,19 @@
 import { useRef, useEffect } from "react";
 import { useState } from "react";
 import dynamic from "next/dynamic"
-import { useOverlay } from "../context/Overlay";
 import { useGlobal } from "@/context/Global";
+import { useMemory } from "@/context/Memory";
+import placeApp from "../utils/placeApp";
 
 const Icon = dynamic(() => import('./Icon'));
-const Modal = dynamic(() => import('./Modal'));
 
 const Application = ({ title, type, position, content }) => {
     const ref = useRef(null)
     const { explorer } = useGlobal()
+    const { openOverlay } = useMemory()
     const [soft, setSoft] = useState({})
+
+    placeApp(ref, position)
 
     const findContent = (explorer, path) => {
         if (!path.length) return null
@@ -24,33 +27,26 @@ const Application = ({ title, type, position, content }) => {
     }
 
     useEffect(() => {
-        if (ref?.current && position?.x && position?.y) {
-            ref.current.style.gridColumnStart = position.x
-            ref.current.style.gridRowStart = position.y
-        }
-    }, [position])
-
-    useEffect(() => {
         if (type == "shortcut") {
             let path = content?.split('/')
             let target = findContent(explorer, path)
-            if (target) setSoft({ ...target, icon: target.type })
+            if (target) setSoft({ ...target, id: "shortcut-" + content.replaceAll('/', '-') })
         }
-        else setSoft({ title: title, icon: type, content: content })
+        else setSoft({ title: title, type: type, path: `${type}-${content}`.replaceAll('/', '-'), content: content })
     }, [type, title, explorer, content])
 
     const handleClick = () => {
-
+        openOverlay(soft)
     }
 
-    if (soft)
-        return <>
-            <button onClick={handleClick} ref={ref} className={`cursor-pointer h-full p-1 grid grid-rows-[1fr_auto] gap-1 place-items-center text-center rounded-[0.2em] hover:bg-neutral-800`}>
-                <Icon name={soft?.icon} fill="white" className="size-full" />
-                {soft?.title}
-            </button>
-        </>
-    else return false
+    if (!soft) return
+
+    return <button ref={ref} onClick={handleClick} className="cursor-pointer hover:bg-grey-800 rounded gap-1 p-1 text-center grid grid-rows-[1fr_auto]">
+        <Icon name={soft?.type} fill="white" className="w-full shrink-0 h-full" />
+        <span className="text-[1rem] h-[3rem] text-ellipsis overflow-hidden line-clamp-2">
+            {soft?.title}
+        </span>
+    </button>
 }
 
 export default Application

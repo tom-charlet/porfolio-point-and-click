@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
 import Explorer from "../lib/Explorer";
 import Desktop from '@/lib/Desktop';
 

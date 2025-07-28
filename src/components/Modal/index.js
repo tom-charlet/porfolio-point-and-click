@@ -7,9 +7,9 @@ const Icon = dynamic(() => import('../Icon'));
 
 const Modal = ({ type, state, ...props }) => {
     return <div className={`${state ? "" : "hidden"} absolute inset-0 p-[2%]`}>
-        <div className="h-full w-full bg-neutral-700 rounded-[0.6em] grid grid-rows-[auto_1fr] overflow-hidden">
+        <div className="h-full w-full bg-grey-700 rounded-[0.6em] grid grid-rows-[auto_1fr] overflow-hidden">
             <TopBar type={type} state={state} {...props} />
-            <div className="bg-neutral-800 h-full w-full border-neutral-300 border-t">
+            <div className="bg-grey-800 h-full w-full border-grey-300 border-t">
 
             </div>
         </div>
@@ -33,7 +33,7 @@ const TopBar = ({ title, type, setState }) => {
 }
 
 const Button = ({ icon, ...props }) => {
-    return <button {...props} className="group hover:bg-neutral-600 px-[1em] h-full">
-        <Icon name={icon} fill="auto" className="fill-neutral-300 group-hover:fill-white size-[1.6em]" />
+    return <button {...props} className="group hover:bg-grey-600 px-[1em] h-full">
+        <Icon name={icon} fill="auto" className="fill-grey-300 group-hover:fill-white size-[1.6em]" />
     </button>
 }

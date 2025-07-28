@@ -7,28 +7,41 @@ const Explorer = () => {
             type: "folder",
             content: [
                 {
-                    title: "Projets Personnelles",
-                    slug: "projets-personnelles",
+                    title: "Projets",
+                    slug: "projets",
                     type: "folder",
-                    content: []
+                    content: [
+                        {
+                            title: "CV video",
+                            slug: "cv-video",
+                            type: "video",
+                            content: "videos/cv-video.mp4",
+                        },
+                        {
+                            title: "Portfolio",
+                            slug: "portfolio",
+                            type: "site",
+                            content: "sites/portfolio.html",
+                        }
+                    ]
                 },
                 {
-                    title: "Projets Professionnels",
-                    slug: "projets-professionnels",
-                    type: "folder",
-                    content: []
+                    title: "Présentation",
+                    slug: "presentation",
+                    type: "note",
+                    content: "notes/presentation.md",
                 },
                 {
-                    title: "Projets Scolaires",
-                    slug: "projets-scolaires",
-                    type: "folder",
-                    content: []
+                    title: "CV",
+                    slug: "cv",
+                    type: "image",
+                    content: "images/file.svg",
                 },
                 {
-                    title: "Projets Favoris",
-                    slug: "projets-favoris",
-                    type: "folder",
-                    content: []
+                    title: "Photo de profil",
+                    slug: "photo-de-profil",
+                    type: "image",
+                    content: "images/file.svg",
                 }
             ]
         }
