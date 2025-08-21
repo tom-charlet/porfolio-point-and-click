@@ -3,9 +3,13 @@
 import { useMemory } from '@/context/Memory'
 import { motion, useDragControls } from 'framer-motion'
 import { useRef, useEffect } from "react"
+import dynamic from "next/dynamic"
 
-const Overlay = ({ title, id, index, containerRef }) => {
-    const { setActiveOverlay, removeOverlay } = useMemory()
+const Icon = dynamic(() => import('../Icon'));
+const TopBar = dynamic(() => import('./TopBar'));
+
+const Overlay = ({ containerRef, title, id, type, index, open }) => {
+    const { setActiveOverlay } = useMemory()
     const dragControls = useDragControls()
     const ref = useRef(null)
 
@@ -13,6 +17,8 @@ const Overlay = ({ title, id, index, containerRef }) => {
         if (ref.current) ref.current.style.zIndex = index
     }, [index])
 
+    if (!open) return null
+    
     return <motion.div
         ref={ref}
         drag
@@ -22,13 +28,10 @@ const Overlay = ({ title, id, index, containerRef }) => {
         onMouseDown={() => setActiveOverlay(id)}
         dragListener={false}
         dragControls={dragControls}
-        className="aspect-[16/12] h-[60%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col shadow-2xl rounded-lg overflow-hidden backdrop-blur-2xl absolute border border-grey-500"
+        className="aspect-[16/12] h-[60%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col shadow-2xl rounded-lg overflow-hidden absolute border-2 bg-grey-800 border-grey-500"
     >
-        <div className="cursor-move bg-grey-700/80 text-white text-sm select-none flex justify-between items-center h-12" onPointerDown={(e) => dragControls.start(e)}>
-            <span className='pl-4'>Document {title}</span>
-            <button onClick={() => removeOverlay(id)} className='h-full aspect-square bg-grey-600/40 cursor-pointer text-2xl font-normal leading-[-50px]'>x</button>
-        </div>
-        <div className="flex h-full w-full items-center justify-center text-white text-4xl font-semibold bg-grey-800/60">
+        <TopBar dragControls={dragControls} id={id} icon={type} title={title} />
+        <div className="flex h-full w-full items-center justify-center text-white text-4xl font-semibold ">
             {title}
         </div>
     </motion.div>

@@ -16,7 +16,7 @@ const Computer = () => {
     const containerRef = useRef()
 
     console.log(overlays)
-
+    
     return <Container innerRef={containerRef}>
         <Grid>
             {desktop?.map((item, index) => <Application key={index} {...item} />)}

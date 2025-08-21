@@ -7,9 +7,6 @@ const MemoryContext = createContext();
 export const MemoryContextProvider = ({ children }) => {
     const [overlays, setOverlays] = useState([])
 
-    const addOverlay = (e) => setOverlays([...overlays, e])
-    const removeOverlay = (id) => setOverlays([...overlays.filter(item => item.id != id)])
-
     const openOverlay = (e) => {
         if (e.id) {
             const overlay = overlays?.find(item => item.id == e.id)
@@ -19,21 +16,18 @@ export const MemoryContextProvider = ({ children }) => {
 
                 setOverlays([
                     ...otherOverlays?.map(item => { return { ...item, index: (item.index > 1) ? (item.index - 1) : item.index } }),
-                    { ...e, index: overlays?.length + 1 }
+                    { ...e, index: overlays?.length + 1, open: true }
                 ])
             }
-            else setOverlays([...overlays, { ...e, index: overlays?.length + 1 }])
+            else setOverlays([...overlays, { ...e, index: overlays?.length + 1, open: true }])
         }
     }
 
-    // useEffect(() => {
-    //     if (size > overlays?.length && overlays?.length > 0) {
-    //         setSize(size + 1)
-    //         setOverlays(overlays?.map(item => {
-    //             return { ...item, index: item.index ?? overlays?.length ?? 0 }
-    //         }))
-    //     }
-    // }, [overlays])
+    const removeOverlay = (id) => setOverlays([...overlays.filter(item => item.id != id)])
+
+    const reduceOverlay = (id) => {
+        setOverlays(overlays?.reduce((a, b) => [...a, { ...b, open: (b.id == id) ? false : (b.open ?? false) }], []))
+    }
 
     const setActiveOverlay = (id) => {
         setOverlays(overlays?.map(item => {
@@ -43,8 +37,8 @@ export const MemoryContextProvider = ({ children }) => {
 
     return <MemoryContext.Provider value={{
         overlays,
-        addOverlay,
         openOverlay,
+        reduceOverlay,
         removeOverlay,
         setActiveOverlay
     }}>
