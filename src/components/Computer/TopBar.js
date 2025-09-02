@@ -10,7 +10,7 @@ const TopBar = ({ dragControls, icon, title, id }) => {
 
     const handleDrag = (e) => dragControls.start(e)
 
-    return <div className="cursor-move text-white text-sm select-none flex justify-between h-12" onPointerDown={handleDrag}>
+    return <div className="cursor-move text-white text-sm select-none flex justify-between h-10 shrink-0" onPointerDown={handleDrag}>
         <div className='gap-2 flex items-center pl-4'>
             <Icon name={icon} fill="auto" className="fill-white size-5" />
             <span>{title}</span>
@@ -20,7 +20,6 @@ const TopBar = ({ dragControls, icon, title, id }) => {
             <Button icon="square" />
             <Button icon="close" close onClick={() => removeOverlay(id)} />
         </div>
-        {/* <button onClick={() => removeOverlay(id)} className='h-full aspect-square bg-grey-600 cursor-pointer text-2xl font-normal leading-[-50px]'>x</button> */}
     </div>
 }
 

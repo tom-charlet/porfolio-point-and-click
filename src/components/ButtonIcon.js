@@ -3,11 +3,13 @@ import { useRef } from "react";
 
 const Icon = dynamic(() => import('./Icon'));
 
-const ButtonIcon = ({ icon, href, size, tag, className, ...props }) => {
+const ButtonIcon = ({ icon, href, size, color, tag, className, ...props }) => {
     const Balise = tag ?? "button";
 
     let sizeButton = ""
     let sizeIcon = ""
+    let colorButton = ""
+    let colorIcon = ""
 
     switch (size) {
         case "md":
@@ -20,8 +22,13 @@ const ButtonIcon = ({ icon, href, size, tag, className, ...props }) => {
             break;
     }
 
-    let styleButton = `flex items-center justify-center ${sizeButton} ${className ?? ""}`;
-    let styleIcon = `${sizeIcon}`;
+    switch (color) {
+        case "white": default:
+            colorIcon = "fill-white"
+    }
+
+    let styleButton = `flex items-center justify-center ${sizeButton} ${colorButton}`;
+    let styleIcon = `${sizeIcon} ${colorIcon} ${className ?? ""}`;
 
     if (href) return <Link href={href} {...props} className={styleButton}>
         <Icon name={icon} fill="auto" className={styleIcon} />
