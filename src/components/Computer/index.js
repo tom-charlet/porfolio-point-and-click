@@ -7,7 +7,7 @@ import { useRef } from "react";
 
 const Container = dynamic(() => import('./Container'));
 const Grid = dynamic(() => import('./Grid'));
-const Application = dynamic(() => import('../Application'));
+const Application = dynamic(() => import('./Application'));
 const Overlay = dynamic(() => import('./Overlay'));
 
 const Computer = () => {

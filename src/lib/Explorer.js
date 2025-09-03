@@ -12,6 +12,10 @@ const Explorer = () => {
                     type: "folder",
                     content: [
                         {
+                            type: "shortcut",
+                            content: "documents/projets",
+                        },
+                        {
                             title: "CV video",
                             slug: "cv-video",
                             type: "video",
@@ -20,7 +24,7 @@ const Explorer = () => {
                         {
                             title: "Portfolio",
                             slug: "portfolio",
-                            type: "site",
+                            type: "web",
                             content: "sites/portfolio.html",
                         }
                     ]
