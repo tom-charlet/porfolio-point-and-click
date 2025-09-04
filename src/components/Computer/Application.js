@@ -9,11 +9,10 @@ import placeApp from "../../utils/placeApp";
 
 const Icon = dynamic(() => import('../Icon'));
 
-const Application = ({ title, type, position, content, style }) => {
+const Application = ({ title, slug, type, position, content, containerPath, style }) => {
     const ref = useRef(null)
     const { explorer } = useGlobal()
-    const { overlays } = useMemory()
-    const { openOverlay } = useMemory()
+    const { overlays, openOverlay, updateOverlay } = useMemory()
     const [soft, setSoft] = useState({})
 
     placeApp(ref, position)
@@ -23,7 +22,7 @@ const Application = ({ title, type, position, content, style }) => {
 
         const [current, ...rest] = path
         const item = content.find(e => e.slug === current)
-        const fullHistory = [...(history ?? []), { title: item.title, slug: item.slug }]
+        const fullHistory = [...(history ?? []), { title: item.title, slug: item.slug, type: item.type }]
 
         if (!item) return null
         if (rest.length === 0) return { ...item, path: fullHistory }
@@ -38,17 +37,31 @@ const Application = ({ title, type, position, content, style }) => {
             let find = findContent({ path: content?.split('/'), content: explorer })
             if (find) target = { ...find }
         }
-        else target = { title: title, type: type, content: content }
+        else target = {
+            title: title, type: type, content: content, slug: slug,
+            path: type == "folder" ? [...containerPath, { title: title, slug: slug, type: type }] : containerPath
+        }
 
-        setSoft({
-            ...target
-        })
+        let container = target.path?.reduce((a, b) => a ? (b.type != "folder" ? a : (`${a}/${b.slug}`)) : b.slug, null)
+
+        // ajouter un identifier unique au soft & pas sur du "shorcut" en tag
+        setSoft({ ...target, container: container, id: `${type == "shortcut" ? "shortcut/" : ""}${container}${target?.type == "folder" ? "" : `/${target.slug}`}` })
 
     }, [type, title, explorer, content])
 
     const handleClick = () => {
-        openOverlay(soft)
         console.log(soft)
+
+        if (soft.type == "folder") {
+            if (!overlays?.find(item => item.id == soft.id)) {
+                let lastContainerId = soft.path.slice(0, soft.path.length - 1)?.reduce((a, b) => a ? `${a}/${b.slug}` : b.slug, null)
+                let lastOverlay = overlays?.find(item => item.id == lastContainerId)
+
+                if (lastOverlay) updateOverlay(lastOverlay.id, soft)
+                else openOverlay(soft)
+            }
+        }
+        else openOverlay(soft)
     }
 
     if (!soft) return

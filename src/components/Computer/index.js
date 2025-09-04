@@ -22,7 +22,7 @@ const Computer = () => {
             </ul>}
             {desktop?.map((item, index) => <Application key={index} {...item} />)}
         </Grid>
-        {overlays?.map(item => <Overlay key={item.id} containerRef={containerRef} {...item} />)}
+        {overlays?.map((item) => <Overlay key={item.identifier} containerRef={containerRef} {...item} />)}
     </Container>
 }
 
