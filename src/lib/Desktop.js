@@ -16,6 +16,11 @@ const Desktop = () => {
             position: { x: 2, y: 2 },
             content: "documents"
         },
+        {
+            type: "shortcut",
+            position: { x: 2, y: 4 },
+            content: "documents/projets/portfolio"
+        },
     ]
 }
 

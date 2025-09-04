@@ -18,37 +18,30 @@ const Application = ({ title, type, position, content, style }) => {
 
     placeApp(ref, position)
 
-    const findContent = ({ path, content, history }) => {
-        if (!path.length) return null
-
-        const [current, ...rest] = path
-        const item = content.find(e => e.slug === current)
-        const fullHistory = [...(history ?? []), { title: item.title, slug: item.slug }]
-
+    const findContent = ({ initial, explorer, path }) => {
+        let currentPath = initial ?? path
+        if (!currentPath.length) return null
+        const [current, ...rest] = currentPath
+        const item = explorer.find(e => e.slug === current)
         if (!item) return null
-        if (rest.length === 0) return { ...item, path: fullHistory }
-
-        return findContent({ content: item.content, path: rest, history: fullHistory })
+        if (rest.length === 0) return item
+        return findContent({ explorer: item.content, path: rest })
     }
 
     useEffect(() => {
-        let target = null
-
         if (type == "shortcut") {
-            let find = findContent({ path: content?.split('/'), content: explorer })
-            if (find) target = { ...find }
+            let path = content?.split('/')
+            let target = findContent({ initial: path, explorer: explorer })
+            if (target) setSoft({ ...target, id: "shortcut-" + content.replaceAll('/', '-') })
         }
-        else target = { title: title, type: type, content: content }
-
-        setSoft({
-            ...target
-        })
-
+        else if (type == "folder") {
+            setSoft({ type: "folder", id: "folder-" + title, title: title, content: content })
+        }
+        else setSoft({ title: title, type: type, path: `${type}-${content}`.replaceAll('/', '-'), content: content })
     }, [type, title, explorer, content])
 
     const handleClick = () => {
         openOverlay(soft)
-        console.log(soft)
     }
 
     if (!soft) return
