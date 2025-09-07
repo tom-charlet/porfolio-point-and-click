@@ -6,6 +6,7 @@ import dynamic from "next/dynamic"
 import { useGlobal } from "@/context/Global";
 import { useMemory } from "@/context/Memory";
 import placeApp from "../../utils/placeApp";
+import { randomKey } from "@/utils/randomKey";
 
 const Icon = dynamic(() => import('../Icon'));
 
@@ -19,14 +20,11 @@ const Application = ({ title, slug, type, position, content, containerPath, styl
 
     const findContent = ({ path, content, history }) => {
         if (!path.length) return null
-
         const [current, ...rest] = path
         const item = content.find(e => e.slug === current)
         const fullHistory = [...(history ?? []), { title: item.title, slug: item.slug, type: item.type }]
-
         if (!item) return null
         if (rest.length === 0) return { ...item, path: fullHistory }
-
         return findContent({ content: item.content, path: rest, history: fullHistory })
     }
 
@@ -44,22 +42,31 @@ const Application = ({ title, slug, type, position, content, containerPath, styl
 
         let container = target.path?.reduce((a, b) => a ? (b.type != "folder" ? a : (`${a}/${b.slug}`)) : b.slug, null)
 
-        // ajouter un identifier unique au soft & pas sur du "shorcut" en tag
-        setSoft({ ...target, container: container, id: `${type == "shortcut" ? "shortcut/" : ""}${container}${target?.type == "folder" ? "" : `/${target.slug}`}` })
+        setSoft({
+            ...target,
+            container: container,
+            id: randomKey()
+            // id: `${container}${target?.type == "folder" ? "" : `/${target.slug}`}`
+        })
 
     }, [type, title, explorer, content])
 
     const handleClick = () => {
-        console.log(soft)
+
+        // faire historique de navigation dans la modal
 
         if (soft.type == "folder") {
-            if (!overlays?.find(item => item.id == soft.id)) {
-                let lastContainerId = soft.path.slice(0, soft.path.length - 1)?.reduce((a, b) => a ? `${a}/${b.slug}` : b.slug, null)
-                let lastOverlay = overlays?.find(item => item.id == lastContainerId)
+            // if (!overlays?.find(item => item.id == soft.id)) {
+            let previousContainer = soft.path.slice(0, soft.path.length - 1)?.reduce((a, b) => a ? `${a}/${b.slug}` : b.slug, null)
+            let previousOverlay = overlays?.find(item => item.container == previousContainer) ?? null
 
-                if (lastOverlay) updateOverlay(lastOverlay.id, soft)
-                else openOverlay(soft)
-            }
+            if (previousOverlay) updateOverlay(previousOverlay.identifier, soft)
+            else openOverlay(soft)
+
+            // let lastContainer = overlays?.find(item => item.id == lastContainerId)
+
+            // if (lastOverlay) updateOverlay(lastOverlay.id, soft)
+            // }
         }
         else openOverlay(soft)
     }

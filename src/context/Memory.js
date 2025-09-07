@@ -1,7 +1,6 @@
 'use client'
 
 import { randomKey } from '@/utils/randomKey';
-
 import { createContext, useContext, useEffect, useState } from 'react';
 
 const MemoryContext = createContext();
@@ -10,6 +9,8 @@ export const MemoryContextProvider = ({ children }) => {
     const [overlays, setOverlays] = useState([])
 
     const openOverlay = (e) => {
+        // revoir l'ouverture si déjà ouvert
+        
         if (e.id) {
             const overlay = overlays?.find(item => item.id == e.id)
 
@@ -31,20 +32,22 @@ export const MemoryContextProvider = ({ children }) => {
         setOverlays(overlays?.reduce((a, b) => [...a, { ...b, open: (b.id == id) ? false : (b.open ?? false) }], []))
     }
 
-    const updateOverlay = (id, content) => {
-
+    const updateOverlay = (identifier, content) => {
         const update = overlays?.reduce((a, b) => {
-            if (b.id == id) a.push({ ...b, ...content })
+            if (b.identifier == identifier) a.push({ ...b, ...content })
             else a.push(b)
             return a
         }, [])
+
+        console.log(overlays, update)
 
         setOverlays(update)
     }
 
     const setActiveOverlay = (id) => {
         setOverlays(overlays?.map(item => {
-            return { ...item, index: item.id == id ? (overlays?.length + 1) : (item.index > 1) ? (item.index - 1) : item.index }
+            // Ajouter condition si l'element a déjà le plus petit index, ne rien faire
+            return { ...item, index: item.id == id ? (overlays?.length + 1) : ((item.index > 1) ? (item.index - 1) : item.index) }
         }))
     }
 
