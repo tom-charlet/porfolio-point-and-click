@@ -1,7 +1,6 @@
 'use client'
 
-import { randomKey } from '@/utils/randomKey';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 const MemoryContext = createContext();
 
@@ -9,46 +8,22 @@ export const MemoryContextProvider = ({ children }) => {
     const [overlays, setOverlays] = useState([])
 
     const openOverlay = (e) => {
-        // revoir l'ouverture si déjà ouvert
-        
-        if (e.id) {
-            const overlay = overlays?.find(item => item.id == e.id)
+        const overlay = overlays?.find(item => item.id == e.id)
 
-            if (overlay) {
-                const otherOverlays = overlays.filter(item => item.id != overlay.id)
-
-                setOverlays([
-                    ...otherOverlays?.map(item => { return { ...item, index: (item.index > 1) ? (item.index - 1) : item.index } }),
-                    { ...e, index: overlays?.length + 1, open: true }
-                ])
-            }
-            else setOverlays([...overlays, { ...e, index: overlays?.length + 1, open: true, identifier: randomKey() }])
-        }
+        if (overlay && !overlay.open && overlay.id) setOverlays([...overlays?.filter(item => item.id !== overlay.id), { ...overlay, index: overlays?.length, open: true }])
+        else setOverlays([...overlays, { ...e, index: overlays?.length + 1, open: true }])
     }
 
-    const removeOverlay = (id) => setOverlays([...overlays.filter(item => item.id != id)])
+    const removeOverlay = (identifier) => setOverlays([...overlays.filter(item => item.identifier != identifier)])
 
-    const reduceOverlay = (id) => {
-        setOverlays(overlays?.reduce((a, b) => [...a, { ...b, open: (b.id == id) ? false : (b.open ?? false) }], []))
-    }
+    const reduceOverlay = (identifier) => setOverlays(overlays?.reduce((a, b) => [...a, { ...b, open: (b.identifier == identifier) ? false : (b.open ?? false) }], []))
 
-    const updateOverlay = (identifier, content) => {
-        const update = overlays?.reduce((a, b) => {
-            if (b.identifier == identifier) a.push({ ...b, ...content })
-            else a.push(b)
-            return a
-        }, [])
+    const updateOverlay = (identifier, content) => setOverlays(overlays?.reduce((a, b) => [...a, (b.identifier == identifier) ? { ...b, ...content } : b], []))
 
-        console.log(overlays, update)
+    const setActiveOverlay = (identifier) => {
+        const topOverlay = overlays?.reduce((a, b) => a?.index > b.index ? a : b, (overlays?.[0] ?? []))
 
-        setOverlays(update)
-    }
-
-    const setActiveOverlay = (id) => {
-        setOverlays(overlays?.map(item => {
-            // Ajouter condition si l'element a déjà le plus petit index, ne rien faire
-            return { ...item, index: item.id == id ? (overlays?.length + 1) : ((item.index > 1) ? (item.index - 1) : item.index) }
-        }))
+        if (topOverlay?.identifier != identifier) setOverlays(overlays?.reduce((a, b) => [...a, { ...b, index: (b.identifier == identifier) ? (overlays?.length) : ((b.index > 1) ? (b.index - 1) : b.index) }], []))
     }
 
     return <MemoryContext.Provider value={{

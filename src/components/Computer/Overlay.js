@@ -8,7 +8,7 @@ import dynamic from "next/dynamic"
 const TopBar = dynamic(() => import('./TopBar'));
 const FolderContent = dynamic(() => import('./FolderContent'));
 
-const Overlay = ({ containerRef, title, id, type, index, open, content, path }) => {
+const Overlay = ({ containerRef, title, identifier, type, index, open, content, path, history }) => {
     const { setActiveOverlay } = useMemory()
     const dragControls = useDragControls()
     const ref = useRef(null)
@@ -25,13 +25,13 @@ const Overlay = ({ containerRef, title, id, type, index, open, content, path }) 
         dragConstraints={containerRef}
         dragElastic={0}
         dragMomentum={false}
-        onMouseDown={() => setActiveOverlay(id)}
+        onMouseDown={() => setActiveOverlay(identifier)}
         dragListener={false}
         dragControls={dragControls}
         className="aspect-[16/12] h-[60%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col shadow-2xl rounded-lg overflow-hidden absolute border-2 bg-grey-800 border-grey-500"
     >
-        <TopBar dragControls={dragControls} id={id} icon={type} title={title} />
-        <Content type={type} content={content} path={path} />
+        <TopBar dragControls={dragControls} identifier={identifier} icon={type} title={title} />
+        <Content type={type} content={content} path={path} history={history} />
     </motion.div>
 }
 

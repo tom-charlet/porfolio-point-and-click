@@ -10,74 +10,59 @@ import { randomKey } from "@/utils/randomKey";
 
 const Icon = dynamic(() => import('../Icon'));
 
-const Application = ({ title, slug, type, position, content, containerPath, style }) => {
+const Application = ({ title, slug, type, position, content, containerPath, style, history }) => {
     const ref = useRef(null)
     const { explorer } = useGlobal()
-    const { overlays, openOverlay, updateOverlay } = useMemory()
+    const { openOverlay, updateOverlay } = useMemory()
     const [soft, setSoft] = useState({})
 
     placeApp(ref, position)
 
-    const findContent = ({ path, content, history }) => {
+    const findContent = ({ path, content, pathLocation }) => {
         if (!path.length) return null
         const [current, ...rest] = path
         const item = content.find(e => e.slug === current)
-        const fullHistory = [...(history ?? []), { title: item.title, slug: item.slug, type: item.type }]
+        const fullPath = [...(pathLocation ?? []), { title: item.title, slug: item.slug, type: item.type }]
         if (!item) return null
-        if (rest.length === 0) return { ...item, path: fullHistory }
-        return findContent({ content: item.content, path: rest, history: fullHistory })
+        if (rest.length === 0) return { ...item, path: fullPath }
+        return findContent({ content: item.content, path: rest, pathLocation: fullPath })
     }
 
     useEffect(() => {
         let target = null
 
-        if (type == "shortcut") {
-            let find = findContent({ path: content?.split('/'), content: explorer })
-            if (find) target = { ...find }
-        }
+        if (type == "shortcut") target = { ...(findContent({ path: content?.split('/'), content: explorer }) ?? null) }
         else target = {
             title: title, type: type, content: content, slug: slug,
             path: type == "folder" ? [...containerPath, { title: title, slug: slug, type: type }] : containerPath
         }
 
-        let container = target.path?.reduce((a, b) => a ? (b.type != "folder" ? a : (`${a}/${b.slug}`)) : b.slug, null)
-
         setSoft({
             ...target,
-            container: container,
-            id: randomKey()
-            // id: `${container}${target?.type == "folder" ? "" : `/${target.slug}`}`
+            id: randomKey(),
+            container: target.path?.reduce((a, b) => a ? (b.type != "folder" ? a : (`${a}/${b.slug}`)) : b.slug, null),
         })
 
     }, [type, title, explorer, content])
 
     const handleClick = () => {
+        const identifier = randomKey()
+        const fullSoft = { ...soft, identifier: identifier, history: [...history ?? [], { title: soft.title, slug: soft.slug, type: soft.type, identifier: identifier }] }
 
-        // faire historique de navigation dans la modal
+        if (fullSoft?.type == "folder" && fullSoft.history?.length > 1) {
+            const previousIdentifier = fullSoft.history[fullSoft.history.length - 2]?.identifier
 
-        if (soft.type == "folder") {
-            // if (!overlays?.find(item => item.id == soft.id)) {
-            let previousContainer = soft.path.slice(0, soft.path.length - 1)?.reduce((a, b) => a ? `${a}/${b.slug}` : b.slug, null)
-            let previousOverlay = overlays?.find(item => item.container == previousContainer) ?? null
-
-            if (previousOverlay) updateOverlay(previousOverlay.identifier, soft)
-            else openOverlay(soft)
-
-            // let lastContainer = overlays?.find(item => item.id == lastContainerId)
-
-            // if (lastOverlay) updateOverlay(lastOverlay.id, soft)
-            // }
+            if (previousIdentifier) updateOverlay(previousIdentifier, fullSoft)
+            else openOverlay(fullSoft)
         }
-        else openOverlay(soft)
+        else openOverlay(fullSoft)
     }
 
     if (!soft) return
 
     return <button ref={ref} onClick={handleClick} className={`cursor-pointer rounded gap-2 p-1 text-center grid grid-rows-[1fr_auto] ${style == "folder" ? "hover:bg-grey-700" : "hover:bg-grey-800"}`}>
         <Icon name={soft?.type} fill="white" className="w-full shrink-0 h-full" />
-        <span className="text-[1rem] h-[3rem] text-ellipsis overflow-hidden line-clamp-2">
-            {soft?.title}
-        </span>
+        <span className="text-[1rem] h-[3rem] text-ellipsis overflow-hidden line-clamp-2">{soft?.title}</span>
     </button>
 }
 

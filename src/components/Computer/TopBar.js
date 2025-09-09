@@ -5,7 +5,7 @@ import dynamic from "next/dynamic"
 
 const Icon = dynamic(() => import('../Icon'));
 
-const TopBar = ({ dragControls, icon, title, id }) => {
+const TopBar = ({ dragControls, icon, title, identifier }) => {
     const { reduceOverlay, removeOverlay } = useMemory()
 
     const handleDrag = (e) => dragControls.start(e)
@@ -16,9 +16,9 @@ const TopBar = ({ dragControls, icon, title, id }) => {
             <span>{title}</span>
         </div>
         <div className='flex items-center'>
-            <Button icon="reduce" onClick={() => reduceOverlay(id)} />
+            <Button icon="reduce" onClick={() => reduceOverlay(identifier)} />
             <Button icon="square" />
-            <Button icon="close" close onClick={() => removeOverlay(id)} />
+            <Button icon="close" close onClick={() => removeOverlay(identifier)} />
         </div>
     </div>
 }
