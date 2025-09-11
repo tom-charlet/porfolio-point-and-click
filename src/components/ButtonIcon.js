@@ -23,11 +23,14 @@ const ButtonIcon = ({ icon, href, size, color, tag, className, ...props }) => {
     }
 
     switch (color) {
+        case "grey":
+            colorIcon = "fill-grey-400"
+            break;
         case "white": default:
             colorIcon = "fill-white"
     }
 
-    let styleButton = `flex items-center justify-center ${sizeButton} ${colorButton}`;
+    let styleButton = `flex items-center justify-center cursor-pointer ${sizeButton} ${colorButton}`;
     let styleIcon = `${sizeIcon} ${colorIcon} ${className ?? ""}`;
 
     if (href) return <Link href={href} {...props} className={styleButton}>

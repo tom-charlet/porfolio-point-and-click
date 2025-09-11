@@ -47,7 +47,7 @@ const Application = ({ title, slug, type, position, content, containerPath, styl
 
     const handleClick = () => {
         const identifier = randomKey()
-        const fullSoft = { ...soft, identifier: identifier, history: [...history ?? [], { title: soft.title, slug: soft.slug, type: soft.type, identifier: identifier }] }
+        const fullSoft = { ...soft, identifier: identifier, history: [...history ?? [], { ...soft, identifier: identifier }] }
 
         if (fullSoft?.type == "folder" && fullSoft.history?.length > 1) {
             const previousIdentifier = fullSoft.history[fullSoft.history.length - 2]?.identifier

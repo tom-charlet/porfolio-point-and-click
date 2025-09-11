@@ -11,10 +11,11 @@ const Explorer = () => {
                     slug: "projets",
                     type: "folder",
                     content: [
-                        // {
-                        //     type: "shortcut",
-                        //     content: "documents/projets",
-                        // },
+                        {
+                            title: "Test",
+                            slug: "test",
+                            type: "folder",
+                        },
                         {
                             title: "CV video",
                             slug: "cv-video",
