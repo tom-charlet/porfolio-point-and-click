@@ -10,7 +10,7 @@ import { randomKey } from "@/utils/randomKey";
 
 const Icon = dynamic(() => import('../Icon'));
 
-const Application = ({ title, slug, type, position, content, containerPath, style, history }) => {
+const Application = ({ title, slug, type, position, content, containerPath, style, history, historyCursor }) => {
     const ref = useRef(null)
     const { explorer } = useGlobal()
     const { openOverlay, updateOverlay } = useMemory()
@@ -47,15 +47,17 @@ const Application = ({ title, slug, type, position, content, containerPath, styl
 
     const handleClick = () => {
         const identifier = randomKey()
+        // A SUIVRE : redéfinir le nouveau dernière historique en fonction du curseur
+
         const fullSoft = { ...soft, identifier: identifier, history: [...history ?? [], { ...soft, identifier: identifier }] }
 
         if (fullSoft?.type == "folder" && fullSoft.history?.length > 1) {
-            const previousIdentifier = fullSoft.history[fullSoft.history.length - 2]?.identifier
+            const previousIdentifier = fullSoft.history[historyCursor ?? fullSoft.history.length - 2]?.identifier
 
-            if (previousIdentifier) updateOverlay(previousIdentifier, fullSoft)
-            else openOverlay(fullSoft)
+            if (previousIdentifier) updateOverlay(previousIdentifier, { ...fullSoft, historyCursor: fullSoft.history.length - 1 })
+            else openOverlay({ ...fullSoft, historyCursor: fullSoft.history.length - 1 })
         }
-        else openOverlay(fullSoft)
+        else openOverlay({ ...fullSoft, historyCursor: 0 })
     }
 
     if (!soft) return
