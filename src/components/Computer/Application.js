@@ -47,9 +47,10 @@ const Application = ({ title, slug, type, position, content, containerPath, styl
 
     const handleClick = () => {
         const identifier = randomKey()
-        // A SUIVRE : redéfinir le nouveau dernière historique en fonction du curseur
-
         const fullSoft = { ...soft, identifier: identifier, history: [...history ?? [], { ...soft, identifier: identifier }] }
+
+        // Reformater l'objet overlay + soft
+        // Ne pas changer l'identifier de l'overlay à l'update
 
         if (fullSoft?.type == "folder" && fullSoft.history?.length > 1) {
             const previousIdentifier = fullSoft.history[historyCursor ?? fullSoft.history.length - 2]?.identifier
